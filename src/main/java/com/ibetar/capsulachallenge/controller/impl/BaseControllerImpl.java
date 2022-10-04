@@ -54,7 +54,7 @@ public abstract class BaseControllerImpl <E extends Base,
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error Por favor revise la request.\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error, Bad request.\"}");
         }
     }
 
@@ -64,7 +64,7 @@ public abstract class BaseControllerImpl <E extends Base,
         try {
             return ResponseEntity.status(HttpStatus.OK).body(service.update(id, entity));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error Por favor revise la request.\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error, Bad request.\"}");
         }
     }
 
@@ -73,7 +73,7 @@ public abstract class BaseControllerImpl <E extends Base,
         try {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(service.delete(id));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error Por favor revise la request.\"}");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error, Bad request.\"}");
         }
     }
 }

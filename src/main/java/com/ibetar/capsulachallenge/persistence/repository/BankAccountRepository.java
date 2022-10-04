@@ -12,7 +12,4 @@ public interface BankAccountRepository extends BaseRepository<BankAccount, Strin
     BankAccount getBalanceByNumberAccount(String numberAccount);
     List<BankAccount> findByBankUsername(String bankUsername);
 
-
-//    @Query("SELECT b FROM BankAccount b WHERE b.name LIKE %:accountNumber%")
-//    BankAccount findByAccountNumber(@Param("accountNumber") String accountNumber);
 }

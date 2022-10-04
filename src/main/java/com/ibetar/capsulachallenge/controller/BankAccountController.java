@@ -47,6 +47,36 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
         );
     }
 
+    @PatchMapping("/account/balance/credit/{numberAccount}/{amountTransaction}")
+    public ResponseEntity<Response> creditBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount,
+                                                                 @PathVariable Double amountTransaction) throws IOException {
+        BankAccount account = service.creditBalanceByNumberAccount(numberAccount,amountTransaction);
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timeStamp(now())
+                        .data(Map.of("balance",account.getBalance()))
+                        .message(Objects.equals(account.getNumberAccount(), numberAccount) ? "Amount was credit to the Account successfully" : "Account Not found")
+                        .httpStatus(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @PatchMapping("/account/balance/debit/{numberAccount}/{amountTransaction}")
+    public ResponseEntity<Response> debitBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount,
+                                                                 @PathVariable Double amountTransaction) throws IOException {
+        BankAccount account = service.debitBalanceByNumberAccount(numberAccount,amountTransaction);
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timeStamp(now())
+                        .data(Map.of("balance",account.getBalance()))
+                        .message(Objects.equals(account.getNumberAccount(), numberAccount) ? "Account balance found successfully" : "Account Not found")
+                        .httpStatus(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
 
 //    @PutMapping("account/credit/numberAccount")
 //    public ResponseEntity<?> updateBalance(@RequestParam String numberAccount){
