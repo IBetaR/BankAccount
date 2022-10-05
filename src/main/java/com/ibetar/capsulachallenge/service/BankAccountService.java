@@ -1,20 +1,13 @@
 package com.ibetar.capsulachallenge.service;
-
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
+import com.ibetar.capsulachallenge.persistence.entity.dto.BankAccountDTO;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
 
-public interface BankAccountService extends BaseService<BankAccount, String>{
+public interface BankAccountService extends BaseService<BankAccount, Long>{
 
+    BankAccount createNewBankAccount(BankAccountDTO bankAccountDTO)throws IOException;
     BankAccount getBalanceByNumberAccount(String numberAccount) throws IOException;
-
     BankAccount creditBalanceByNumberAccount(String numberAccount,Double amountTransaction)throws IOException;
-
-    BankAccount debitBalanceByNumberAccount(String numberAccount, Double amountTransaction);
-
-    //BankAccount credit(String numberAccount, Double amount) throws IOException;
-
-
+    BankAccount debitBalanceByNumberAccount(String numberAccount, Double amountTransaction)throws IOException;
 }

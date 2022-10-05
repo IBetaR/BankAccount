@@ -2,6 +2,8 @@ package com.ibetar.capsulachallenge.service.impl;
 
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.BankTransaction;
+import com.ibetar.capsulachallenge.persistence.entity.dto.BankAccountDTO;
+import com.ibetar.capsulachallenge.persistence.entity.mapper.BankAccountDtoToBankAccount;
 import com.ibetar.capsulachallenge.persistence.repository.BankAccountRepository;
 import com.ibetar.capsulachallenge.persistence.repository.BaseRepository;
 import com.ibetar.capsulachallenge.service.BankAccountService;
@@ -15,18 +17,30 @@ import java.util.*;
 
 @Slf4j
 @Service
-public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, String> implements BankAccountService {
+public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> implements BankAccountService {
 
     @Autowired
-    private BankAccountRepository bankAccountRepository;
+    private final BankAccountRepository bankAccountRepository;
 
-    public BankAccountServiceImpl(BaseRepository<BankAccount,String> baseRepository){
+    private final BankAccountDtoToBankAccount mapper;
+
+    public BankAccountServiceImpl(BaseRepository<BankAccount,Long> baseRepository,
+                                  BankAccountRepository bankAccountRepository,
+                                  BankAccountDtoToBankAccount mapper){
         super(baseRepository);
+        this.bankAccountRepository = bankAccountRepository;
+        this.mapper = mapper;
+    }
+
+    @Override
+    public BankAccount createNewBankAccount(BankAccountDTO bankAccountDTO) {
+        BankAccount bankAccount = mapper.map(bankAccountDTO);
+        return this.bankAccountRepository.save(bankAccount);
     }
 
     @Override
     public Collection<BankAccount> list(int limit) {
-        log.info("Fetching all servers ->");
+        log.info("Fetching all Bank accounts ->");
         return bankAccountRepository.findAll(PageRequest.of(0,limit)).toList();
     }
 
@@ -34,6 +48,7 @@ public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, String>
     public BankAccount getBalanceByNumberAccount(String numberAccount) throws IOException {
         log.info("Fetching account number: {}", numberAccount);
         BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
+        log.info("Account number: {} has balance =$ {}", numberAccount, account.getBalance());
         return account;
     }
 

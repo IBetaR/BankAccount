@@ -1,13 +1,11 @@
 package com.ibetar.capsulachallenge.persistence.entity;
 
-import com.ibetar.capsulachallenge.persistence.entity.dto.BalanceDto;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Objects;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 @NoArgsConstructor
@@ -18,7 +16,8 @@ public class BankAccount extends Base{
     @Column(unique = true)
     private String numberAccount;
 
-    private double balance;
+    @PositiveOrZero
+    private double balance = 0;
 
     @Column(unique = true)
     private String bankUsername;

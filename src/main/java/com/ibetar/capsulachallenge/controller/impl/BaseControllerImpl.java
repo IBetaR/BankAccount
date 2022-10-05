@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 public abstract class BaseControllerImpl <E extends Base,
-        S extends BaseServiceImpl<E, String>> implements BaseController<E, String>{
+        S extends BaseServiceImpl<E, Long>> implements BaseController<E, Long>{
 
     @Autowired
     protected S service;
@@ -32,35 +32,55 @@ public abstract class BaseControllerImpl <E extends Base,
     }
 
     @GetMapping("account/{id}")
-    public ResponseEntity<?> getOne(@PathVariable String id) {
+    public ResponseEntity<?> getOne(@PathVariable Long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .data(Map.of("bankAccounts",service.findById(id)))
+                            .message("Bank Account fetched successfully")
+                            .httpStatus(HttpStatus.OK)
+                            .statusCode(HttpStatus.OK.value())
+                            .build()
+            );
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"Error\":\"Please try later.\"}");
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .message("Resources or data are not in Database.  Please try later or contact System admin")
+                            .developerMessage("Error from BaseControllerImpl. Resource not found")
+                            .httpStatus(HttpStatus.NOT_FOUND)
+                            .statusCode(HttpStatus.NOT_FOUND.value()).build());
         }
     }
-
-//    @GetMapping("account/getBalance/{id}")
-//    public ResponseEntity<?> getBalance(@PathVariable String id) {
-//        try {
-//            return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"Error\":\"Please try later.\"}");
-//        }
-//    }
 
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody E entity) {
         try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(service.save(entity));
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .data(Map.of("bankAccounts",service.save(entity)))
+                            .message("Bank Account created successfully")
+                            .httpStatus(HttpStatus.CREATED)
+                            .statusCode(HttpStatus.CREATED.value())
+                            .build()
+            );
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error, Bad request.\"}");
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .message("Bad request.  Please check your request and try again")
+                            .developerMessage("Error from BaseControllerImpl. Bad request")
+                            .httpStatus(HttpStatus.BAD_REQUEST)
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
+                            .reason("User or Bank Account number/ID is already exists in Database")
+                            .build());
         }
     }
 
-
     @PatchMapping("account/balance/update/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody E entity) {
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody E entity) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(service.update(id, entity));
         } catch (Exception e) {
@@ -68,12 +88,27 @@ public abstract class BaseControllerImpl <E extends Base,
         }
     }
 
-    @DeleteMapping("account/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(service.delete(id));
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .data(Map.of("bankAccounts",service.delete(id)))
+                            .message("Bank Account was deleted successfully")
+                            .httpStatus(HttpStatus.OK)
+                            .statusCode(HttpStatus.OK.value())
+                            .build());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"Error\":\"Error, Bad request.\"}");
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .message("Resources or data are not in Database.  Please try later or contact System admin")
+                            .developerMessage("Error deleting item. Resource not found")
+                            .httpStatus(HttpStatus.NOT_FOUND)
+                            .reason("User or Bank Account number/ID does not exists in Database")
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .build());
         }
     }
 }

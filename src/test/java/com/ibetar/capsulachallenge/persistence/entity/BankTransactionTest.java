@@ -23,6 +23,20 @@ class BankTransactionTest {
     }
 
     @Test
+    @DisplayName(value = "Check Bank account balance")
+    void createAnNewAccountAndCheckInitialBalanceIsPositiveAndZero() {
+
+        BankAccount bankAccount = new BankAccount(
+                "C1", 0,"ibr",AccountType.CURRENT_ACCOUNT);
+
+        assertAll(
+                ()-> assertEquals(0,BankTransaction.checkBalance(bankAccount.getBalance())),
+                ()-> assertEquals(100,BankTransaction.creditAmount(100))
+        );
+
+    }
+
+    @Test
     @DisplayName(value = "Credit to Bank account a random amount and check balance")
     void creditAmount() {
         double balance1 = 1000;

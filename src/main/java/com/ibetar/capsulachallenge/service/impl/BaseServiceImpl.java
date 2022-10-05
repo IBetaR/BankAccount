@@ -1,6 +1,5 @@
 package com.ibetar.capsulachallenge.service.impl;
 
-import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.Base;
 import com.ibetar.capsulachallenge.persistence.repository.BaseRepository;
 import com.ibetar.capsulachallenge.service.BaseService;
@@ -79,5 +78,4 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
             throw new Exception(e.getMessage());
         }
     }
-
 }
