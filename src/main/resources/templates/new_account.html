@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http//www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>New Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Bank Capsula Challenge</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/new">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/new">New Account</a>
+                </li>
+<!--                <li class="nav-item dropdown">-->
+<!--                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                        Actions-->
+<!--                    </a>-->
+<!--                    <ul class="dropdown-menu">-->
+<!--                        <li><a class="dropdown-item" href="#">Check Balance</a></li>-->
+<!--                        <li><a class="dropdown-item" href="#">Credit amount</a></li>-->
+<!--                        <li><a class="dropdown-item" href="#">Debit amount</a></li>-->
+<!--                        <li><a class="dropdown-item" href="api/v1/bank/accounts/new">Create account</a></li>-->
+<!--                        <li><hr class="dropdown-divider"></li>-->
+<!--                        <li><a class="dropdown-item" href="#">home</a></li>-->
+<!--                    </ul>-->
+<!--                </li>-->
+
+            </ul>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<br>
+<div class="container text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+                <h1 class="text-center">Crear Cuenta</h1>
+                <div class="card-body">
+                    <for th:action="@{/save}" th:object="${account}" method="post">
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">@username</span>
+                                <input type="text" name="bankUsername" placeholder="Ingrese Username" th:field="*{bankUsername}" class="form-control" aria-label="Username" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon2">@Account Number</span>
+                                <input type="text" name="numberAccount" placeholder="Ingrese Número de Cuenta" th:field="*{numberAccount}" class="form-control" aria-label="Username" aria-describedby="basic-addon1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Balance $</span>
+                                <input type="number" name="balance" class="form-control" th:field="*{balance}" aria-label="Amount (to the nearest dollar)" required>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch form-check-reverse">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse">
+                            <label class="form-check-label" for="flexSwitchCheckReverse">Current Account</label>
+                        </div>
+
+                        <div class="form-check form-switch form-check-reverse">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse1">
+                            <label class="form-check-label" for="flexSwitchCheckReverse1">Savings Account</label>
+                        </div>
+                    </for>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+<!--        <label for="basic-url" class="form-label">Username</label>-->
+<!--        <div class="input-group mb-3">-->
+<!--            <span class="input-group-text" id="basic-addon1">@example</span>-->
+<!--            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">-->
+<!--        </div>-->
+
+<!--        <label for="basic-url" class="form-label">Account Number</label>-->
+<!--        <div class="input-group mb-3">-->
+<!--            <span class="input-group-text" id="basic-addon3">Account Number</span>-->
+<!--            <input type="text" class="form-control" placeholder="Account Number"  id="basic-url" aria-describedby="basic-addon3">-->
+<!--        </div>-->
+
+<!--        <div class="form-check form-switch form-check-reverse">-->
+<!--            <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse">-->
+<!--            <label class="form-check-label" for="flexSwitchCheckReverse">Current Account</label>-->
+<!--        </div>-->
+
+<!--        <div class="form-check form-switch form-check-reverse">-->
+<!--            <input class="form-check-input" type="checkbox" id="flexSwitchCheckReverse1">-->
+<!--            <label class="form-check-label" for="flexSwitchCheckReverse1">Savings Account</label>-->
+<!--        </div>-->
+
+<!--        <div class="input-group mb-3">-->
+<!--            <span class="input-group-text">Balance $</span>-->
+<!--            <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">-->
+<!--        </div>-->
+    </div>
+
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+</body>
+</html>
+
+

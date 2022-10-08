@@ -24,7 +24,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
             List<E> entities = baseRepository.findAll();
             return entities;
         } catch (Exception e) {
-            throw new Exception(e.getMessage());
+            throw new Exception(e.getMessage()+"Error");
         }
     }
 

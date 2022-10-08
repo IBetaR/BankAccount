@@ -1,5 +1,7 @@
 package com.ibetar.capsulachallenge.service.impl;
 
+import com.ibetar.capsulachallenge.exception.BankAccountInsufficientFondsException;
+import com.ibetar.capsulachallenge.exception.BankAccountNotFoundException;
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.BankTransaction;
 import com.ibetar.capsulachallenge.persistence.entity.dto.BankAccountDTO;
@@ -18,6 +20,8 @@ import java.util.*;
 @Slf4j
 @Service
 public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> implements BankAccountService {
+
+    private final HashMap<Long, BankAccountDTO> bankAccountDTOHashMap= new HashMap<>();
 
     @Autowired
     private final BankAccountRepository bankAccountRepository;
@@ -47,20 +51,24 @@ public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> i
     @Override
     public BankAccount getBalanceByNumberAccount(String numberAccount) throws IOException {
         log.info("Fetching account number: {}", numberAccount);
-        BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
-        log.info("Account number: {} has balance =$ {}", numberAccount, account.getBalance());
-        return account;
+        Optional<BankAccount> bankAccount =Optional.ofNullable(bankAccountRepository.findByNumberAccount(numberAccount));
+        log.info("Account number: {} ", numberAccount);
+        return bankAccount.orElseThrow(
+                ()->new BankAccountNotFoundException("Bank Account does not exist in Database. Please check your request"));
     }
 
     @Override
     public BankAccount creditBalanceByNumberAccount(String numberAccount, Double amountTransaction) {
         log.info("Accrediting amount {} to account number: {}",amountTransaction, numberAccount);
-        BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
-
-        Double balance = BankTransaction.creditAmount(account.getBalance(),amountTransaction);
-        account.setBalance(balance);
-        bankAccountRepository.save(account);
-        return account;
+        try {
+            BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
+            Double balance = BankTransaction.creditAmount(account.getBalance(),amountTransaction);
+            account.setBalance(balance);
+            bankAccountRepository.save(account);
+            return account;
+        } catch (Exception e) {
+            throw new BankAccountNotFoundException("Bank Account does not exist in Database. Please check your request");
+        }
     }
 
     @Override
@@ -68,88 +76,21 @@ public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> i
         log.info("Consulting balance of account number {} : Debit amount transaction {}", numberAccount, amountTransaction);
         BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
         Double actualBalance = account.getBalance();
-        if (actualBalance >= amountTransaction) {
-            log.info("Transaction: Debiting amount {} from account number {}:", amountTransaction, numberAccount);
-            Double balance = BankTransaction.debitAmount(account.getBalance(),amountTransaction);
-            account.setBalance(balance);
-            bankAccountRepository.save(account);
-            log.info("Transaction request successful");
+        try {
+            if (actualBalance >= amountTransaction) {
+                log.info("Transaction: Debiting amount {} from account number {}:", amountTransaction, numberAccount);
+                Double balance = BankTransaction.debitAmount(account.getBalance(),amountTransaction);
+                account.setBalance(balance);
+                bankAccountRepository.save(account);
+                log.info("Transaction request successful");
+            } else {
+                log.info("Account fonds are insufficient");
+                log.error("Transaction request is being canceled...");
+                throw new BankAccountInsufficientFondsException("Balance Account are lower than this amount transaction");
+            }
             return account;
+        } catch (Exception e) {
+            throw new BankAccountInsufficientFondsException("Balance Account are lower than this amount transaction");
         }
-        log.info("Account fonds are insufficient");
-        log.error("Transaction request is being canceled...");
-        return account;
     }
-
-    //    @Override
-//    public List<BankAccount> search(String filter) throws Exception {
-//        try {
-//            //List<BankAccount> bankAccounts = bankAccountRepository.findByBankUsername(filter);
-//            List<BankAccount> bankAccounts = bankAccountRepository.findAll();
-//            List<BankAccount> userAccounts = bankAccounts.stream()
-//                    .filter(bankAccount -> bankAccount.getNumberAccount().equals(filter))
-//                    .limit(10).collect(Collectors.toList());
-//            //Optional<BankAccount> userBalance = userAccounts.g
-//            return userAccounts;
-//
-//        } catch (Exception e) {
-//            throw new Exception(e.getMessage());
-//        }
-//    }
-
-//    @Override
-//    public BankAccount credit(String numberAccount, Double amount) throws IOException {
-//
-//        log.info("Credit amount to account {} -> {}", numberAccount, amount);
-//        bankAccountRepository.findByNumberAccount(numberAccount);
-//        BankTransaction bankTransaction = new BankTransaction(
-//                BankTransaction.creditAmount(amount),amount);
-//        BankAccount bankAccount = new BankAccount();
-//        bankAccount.setBalance(bankTransaction.finalBalance);
-//        bankAccountRepository.save(bankAccount);
-//        return bankAccount;
-//    }
-
-//    @Override
-//    public BankAccount getBalanceByNumberAccount(String numberAccount) throws IOException {
-//        log.info("Fetching account number: {}", numberAccount);
-//        BankAccount account = bankAccountRepository.getBalanceByNumberAccount(numberAccount);
-//        return account;
-//    }
-
-//    public Object updateBalance(String numberAccount) {
-//        return "Update Balance";
-//    }
-//
-//    public void showBankAccountBalance(String id, BankAccount bankAccount){
-//        BankAccount account = getUserAccountOrThrow(id);
-//        Map<String,String > info = extractAccountInfo(bankAccount);
-//        log.info("account: "+ account);
-//        log.info("info: "+ info);
-//        System.out.println(account);
-//        System.out.println(info);
-//    }
-
-//
-//
-//    //2. Grab info from Account
-//    public static Map<String, String> extractAccountInfo(BankAccount data) {
-//        Map<String,String > info = new HashMap<>();
-//        info.put("numberAccount", data.getNumberAccount());
-//        info.put("balance", String.valueOf(data.getBalance()));
-//        return info;
-//    }
-//
-//
-//    //3. UserBankAccount exist in DB
-//    public BankAccount getUserAccountOrThrow(String userAccountId) {
-//        BankAccount userBankAccount = bankAccountRepository
-//                .findAll()
-//                .stream()
-//                .filter(user -> user.getBankUsername().equals(userAccountId))
-//                .findFirst()
-//                .orElseThrow(() -> new IllegalStateException(String.format("User %s not found", userAccountId)));
-//        return userBankAccount;
-//    }
-
 }

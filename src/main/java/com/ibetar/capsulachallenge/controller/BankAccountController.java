@@ -46,7 +46,7 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
                             .build()
             );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e + "Error creating new account");
         }
 
     }
