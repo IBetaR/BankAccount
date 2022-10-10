@@ -3,8 +3,10 @@ package com.ibetar.capsulachallenge.controller.impl;
 import com.ibetar.capsulachallenge.persistence.entity.Base;
 import com.ibetar.capsulachallenge.persistence.entity.Response;
 import com.ibetar.capsulachallenge.service.impl.BaseServiceImpl;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +14,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Map;
 
+@Api
 public abstract class BaseControllerImpl <E extends Base,
         S extends BaseServiceImpl<E, Long>> implements BaseController<E, Long>{
 
     @Autowired
     protected S service;
 
+    @ApiOperation(value = "Retrieve all accounts listed", notes = "This Operation returns all stored accounts.")
     @GetMapping("")
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(
@@ -31,6 +35,7 @@ public abstract class BaseControllerImpl <E extends Base,
         );
     }
 
+    @ApiOperation(value = "Retrieve one account by its ID", notes = "This Operation returns an account by ID")
     @GetMapping("account/{id}")
     public ResponseEntity<?> getOne(@PathVariable Long id) {
         try {
@@ -54,6 +59,8 @@ public abstract class BaseControllerImpl <E extends Base,
         }
     }
 
+    @ApiOperation(value = "Create a new Bank Account",
+            notes = "This operation can choose type of account. It returns a new account with 0.00 balance by default")
     @PostMapping("")
     public ResponseEntity<?> save(@RequestBody E entity) {
         try {
@@ -88,6 +95,7 @@ public abstract class BaseControllerImpl <E extends Base,
         }
     }
 
+    @ApiOperation(value = "Delete one account by its ID", notes = "This Operation delete an account by ID")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {

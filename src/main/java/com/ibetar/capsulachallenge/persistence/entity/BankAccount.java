@@ -3,6 +3,7 @@ package com.ibetar.capsulachallenge.persistence.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.decimal4j.util.DoubleRounder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -31,7 +32,7 @@ public class BankAccount extends Base{
     public BankAccount(String numberAccount, double balance, String bankUsername, AccountType type) {
 
         this.numberAccount = numberAccount;
-        this.balance = balance;
+        this.balance = DoubleRounder.round(balance,3);
         this.bankUsername = bankUsername;
         this.type = type;
     }

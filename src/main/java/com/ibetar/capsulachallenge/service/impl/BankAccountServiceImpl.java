@@ -11,8 +11,12 @@ import com.ibetar.capsulachallenge.persistence.repository.BaseRepository;
 import com.ibetar.capsulachallenge.service.BankAccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
@@ -37,12 +41,14 @@ public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> i
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public BankAccount createNewBankAccount(BankAccountDTO bankAccountDTO) {
         BankAccount bankAccount = mapper.map(bankAccountDTO);
         return this.bankAccountRepository.save(bankAccount);
     }
 
     @Override
+    @Cacheable(value = "accounts")
     public Collection<BankAccount> list(int limit) {
         log.info("Fetching all Bank accounts ->");
         return bankAccountRepository.findAll(PageRequest.of(0,limit)).toList();
@@ -60,26 +66,30 @@ public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> i
     @Override
     public BankAccount creditBalanceByNumberAccount(String numberAccount, Double amountTransaction) {
         log.info("Accrediting amount {} to account number: {}",amountTransaction, numberAccount);
+        BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
         try {
-            BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
-            Double balance = BankTransaction.creditAmount(account.getBalance(),amountTransaction);
-            account.setBalance(balance);
-            bankAccountRepository.save(account);
-            return account;
+            if (amountTransaction >= 0) {
+                double balance = BankTransaction.creditAmount(account.getBalance(),amountTransaction);
+                account.setBalance(balance);
+                bankAccountRepository.save(account);
+                return account;
+            }
         } catch (Exception e) {
             throw new BankAccountNotFoundException("Bank Account does not exist in Database. Please check your request");
         }
+        log.error("Invalid Amount transaction");
+        return account;
     }
 
     @Override
     public BankAccount debitBalanceByNumberAccount(String numberAccount, Double amountTransaction) {
         log.info("Consulting balance of account number {} : Debit amount transaction {}", numberAccount, amountTransaction);
         BankAccount account = bankAccountRepository.findByNumberAccount(numberAccount);
-        Double actualBalance = account.getBalance();
+        double actualBalance = account.getBalance();
         try {
             if (actualBalance >= amountTransaction) {
                 log.info("Transaction: Debiting amount {} from account number {}:", amountTransaction, numberAccount);
-                Double balance = BankTransaction.debitAmount(account.getBalance(),amountTransaction);
+                double balance = BankTransaction.debitAmount(account.getBalance(),amountTransaction);
                 account.setBalance(balance);
                 bankAccountRepository.save(account);
                 log.info("Transaction request successful");

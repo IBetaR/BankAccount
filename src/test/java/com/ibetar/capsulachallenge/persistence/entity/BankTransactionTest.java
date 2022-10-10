@@ -1,7 +1,9 @@
 package com.ibetar.capsulachallenge.persistence.entity;
 
 
+import com.ibetar.capsulachallenge.exception.BankAccountInsufficientFondsException;
 import com.ibetar.capsulachallenge.service.impl.BankAccountServiceImpl;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +44,6 @@ class BankTransactionTest {
                 ()-> assertEquals(0,BankTransaction.checkBalance(bankAccount.getBalance())),
                 ()-> assertEquals(100,BankTransaction.creditAmount(100))
         );
-
     }
 
     @Test
@@ -93,5 +94,16 @@ class BankTransactionTest {
                 ()-> assertEquals(199500,bankTransaction3),
                 ()-> assertEquals(499.5,bankTransaction4)
         );
+    }
+
+    @Test
+    @Disabled
+    void shouldThrowExceptions(){
+        BankAccount bankAccount = new BankAccount(
+                "C1", 0,"ibr",AccountType.CURRENT_ACCOUNT);
+
+//        assertAll(
+//                ()->assertThrows(BankAccountInsufficientFondsException.class,BankAccount)
+//        );
     }
 }

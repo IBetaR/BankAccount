@@ -1,6 +1,7 @@
 package com.ibetar.capsulachallenge.persistence.entity;
 
 import lombok.Data;
+import org.decimal4j.util.DoubleRounder;
 
 import java.util.stream.DoubleStream;
 @Data
@@ -11,22 +12,22 @@ public class BankTransaction {
     public final double amountTransaction;
 
     public BankTransaction(double finalBalance, double amountTransaction) {
-        this.finalBalance = finalBalance;
-        this.amountTransaction = amountTransaction;
+        this.finalBalance = DoubleRounder.round(finalBalance,3);
+        this.amountTransaction = DoubleRounder.round(amountTransaction,3);
     }
 
     public static double checkBalance(double actualBalance){
-        return actualBalance;
+        return DoubleRounder.round(actualBalance,3);
     }
 
     public static double creditAmount(double... finalBalance){
-        return DoubleStream.of(finalBalance)
-                .reduce(0, (actualBalance,amountTransaction) -> actualBalance + amountTransaction);
+        return DoubleRounder.round(DoubleStream.of(finalBalance)
+                .reduce(0, (actualBalance,amountTransaction) -> actualBalance + amountTransaction),3);
     }
 
     public static double debitAmount(double... finalBalance){
-        return DoubleStream.of(finalBalance)
-                .reduce(0, (actualBalance,amountTransaction) -> (actualBalance - amountTransaction)*-1)*-1;
+        return DoubleRounder.round((DoubleStream.of(finalBalance)
+                .reduce(0, (actualBalance,amountTransaction) -> (actualBalance - amountTransaction)*-1)*-1),3);
     }
 
 //    public static double debitAmount(double... finalBalance){

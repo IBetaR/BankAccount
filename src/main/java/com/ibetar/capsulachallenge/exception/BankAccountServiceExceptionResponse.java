@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class BankAccountServiceExceptionResponse {
+
     private String message;
     private String details;
     private HttpStatus status;

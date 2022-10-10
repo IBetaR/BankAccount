@@ -34,7 +34,4 @@ public class BankAccountServiceExceptionHandler extends ResponseEntityExceptionH
         BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST, LocalDateTime.now());
         return new ResponseEntity<>(response, response.getStatus());
     }
-
-
-
 }

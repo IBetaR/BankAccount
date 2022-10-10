@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 public interface BankAccountRepository extends BaseRepository<BankAccount, Long>{
 
     BankAccount findByNumberAccount(String numberAccount);
-
 }

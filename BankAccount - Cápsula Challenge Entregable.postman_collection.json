@@ -1,0 +1,228 @@
+{
+  "info": {
+    "_postman_id": "a26555e0-7478-4e66-97c5-acd2398aa1f4",
+    "name": "BankAccount - Cápsula Challenge Entregable",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20453419"
+  },
+  "item": [
+    {
+      "name": "Bank Accounts List",
+      "item": [
+        {
+          "name": "Get Bank Accounts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/accounts",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/accounts/account/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "accounts",
+                "account",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Ver saldo de cuenta",
+      "item": [
+        {
+          "name": "Get  Balance By AccountNumber 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/accounts/account/balance/CCf-350",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "accounts",
+                "account",
+                "balance",
+                "CCf-350"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Acreditar saldo a cuenta",
+      "item": [
+        {
+          "name": "Credit amount by numberAccount 1",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"timeStamp\": \"2022-10-03T21:35:39.5532899\",\r\n    \"statusCode\": 200,\r\n    \"httpStatus\": \"OK\",\r\n    \"message\": \"Account balance found successfully\",\r\n    \"data\": {\r\n        \"balance\": 110.0\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/accounts/account/balance/credit/CCf-350/1000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "accounts",
+                "account",
+                "balance",
+                "credit",
+                "CCf-350",
+                "1000"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Debitar una cantidad a cuenta",
+      "item": [
+        {
+          "name": "Debit amount  by numberAccount 1",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"timeStamp\": \"2022-10-03T21:35:39.5532899\",\r\n    \"statusCode\": 200,\r\n    \"httpStatus\": \"OK\",\r\n    \"message\": \"Account balance found successfully\",\r\n    \"data\": {\r\n        \"balance\": 110.0\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/accounts/account/balance/debit/C1/1000",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "account",
+                "balance",
+                "debit",
+                "C1",
+                "1000"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Crear una cuenta corriente nueva",
+      "item": [
+        {
+          "name": "Create New Current Account DTO",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"numberAccount\": \"CC-2\",\r\n    \"bankUsername\": \"CC2\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/v1/accounts/new",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "new"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Eliminar una cuenta por ID",
+      "item": [
+        {
+          "name": "Delete Account by Id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/v1/accounts/delete/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "v1",
+                "accounts",
+                "delete",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
