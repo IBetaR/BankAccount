@@ -37,17 +37,29 @@ public class HttpRequestTest {
 
     @Test
     public void shouldAssertBankAccountCreatedAndMockedExist(){
+        BankAccount bankAccount = BankAccountDataTestUtils.getMockBankAccount2(1L);
         BankAccountDTO bankAccountDTO = BankAccountDataTestUtils.getMockBankAccount(1L);
 
         HttpHeaders httpHeader =new HttpHeaders();
         httpHeader.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<BankAccountDTO> entity =new HttpEntity<>(bankAccountDTO,httpHeader);
+        HttpEntity<BankAccount> entity =new HttpEntity<>(bankAccount,httpHeader);
+//        ResponseEntity<Response> response =testRestTemplate.postForEntity("/accounts/new",
+//                entity,Response.class);
+
+        //Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        //Response bodyResponse = response.getBody();
+        //Assertions.assertNotNull(bodyResponse);
+
+        Assertions.assertAll(
+                ()-> assertThat(bankAccountDTO.getClass()).isNotFinal(),
+                ()-> assertThat(bankAccount.getClass()).isFinal()
+
+        );
 
         Assertions.assertNotNull(bankAccountDTO);
         Assertions.assertEquals("ibr",bankAccountDTO.getBankUsername());
         Assertions.assertEquals("C1",bankAccountDTO.getNumberAccount());
         Assertions.assertEquals(0.00,bankAccountDTO.getBalance());
-
     }
 
 
@@ -57,11 +69,59 @@ public class HttpRequestTest {
 
         String urlNewAccount = "http://localhost:" + port + "/api/accounts/new";
         String urlGetAccounts = "http://localhost:" + port + "/api/accounts";
+        String urlGetAccountBalance = "http://localhost:" + port + "/api/accounts/account/balance/C1";
+        String urlGetCreditBalance = "http://localhost:" + port + "/api/accounts/account/balance/credit/C1/1000";
+        String urlGetDebitBalance = "http://localhost:" + port + "/api/accounts/account/balance/debit/C1/1000";
 
         assertThat(this.testRestTemplate.getForEntity(urlNewAccount,
                 BankAccount.class)).hasNoNullFieldsOrProperties();
 
-        assertThat(this.testRestTemplate.getForEntity(urlGetAccounts,BankAccountDTO.class)).hasNoNullFieldsOrProperties();
+        assertThat(this.testRestTemplate.getForEntity(urlGetAccounts,
+                BankAccountDTO.class)).hasNoNullFieldsOrProperties();
+
+        assertThat(this.testRestTemplate.getForEntity(urlGetAccountBalance,
+                BankAccountDTO.class)).hasNoNullFieldsOrProperties();
+
+        assertThat(this.testRestTemplate.getForEntity(urlGetAccountBalance,
+                BankAccountDTO.class)).hasNoNullFieldsOrProperties();
+
+        assertThat(this.testRestTemplate.getForEntity(urlGetCreditBalance,
+                BankAccountDTO.class)).hasNoNullFieldsOrProperties();
+
+        assertThat(this.testRestTemplate.getForEntity(urlGetDebitBalance,
+                BankAccountDTO.class)).hasNoNullFieldsOrProperties();
+
+
+    }
+
+    @Test
+    @DisplayName("Testing errors messages are thrown for end points requests methods")
+    public void ShouldReturnFailErrorIfRequestAreBadRequest() throws Exception{
+
+        String urlNewAccount = "http://localhost:" + port + "/api/accounts/new";
+        String urlGetAccounts = "http://localhost:" + port + "/api/accounts";
+        String urlGetAccountBalance = "http://localhost:" + port + "/api/accounts/account/balance/C1";
+        String urlGetCreditBalance = "http://localhost:" + port + "/api/accounts/account/balance/credit/C1/1000";
+        String urlGetDebitBalance = "http://localhost:" + port + "/api/accounts/account/balance/debit/C1/1000";
+
+        //fail messages
+
+        //Get accounts request
+        assertThat(urlGetAccounts).withFailMessage("Resources or data are not in Database.  Please try later or contact System admin");
+
+        //Create a new account request
+        assertThat(urlNewAccount).withFailMessage("Error creating new account");
+
+        //Get account balance request
+        assertThat(urlGetAccountBalance).withFailMessage("Resources or data are not in Database.  Please try later or contact System admin -> ");
+
+
+        //Credit amount request
+        assertThat(urlGetCreditBalance).withFailMessage("Invalid transaction," +
+                " you cannot credit or withdraw invalid/negative amounts. check your balance if is lower than your available balance -> : ");
+
+        //Debit amount request
+        assertThat(urlGetDebitBalance).withFailMessage("Fonds are insufficient,");
     }
 
     @Test

@@ -35,10 +35,10 @@ class BankAccountRepositoryTest {
     void findAccountByNumberAccount() {
 
         //given
-        AccountType accountType = AccountType.CURRENT_ACCOUNT;
-        BankAccount currentAccount = new BankAccount(
-                "C1", 0,"ibr", accountType);
-        repositoryUnderTest.save(currentAccount);
+//        AccountType accountType = AccountType.CURRENT_ACCOUNT;
+//        BankAccount currentAccount = new BankAccount(
+//                "C1", 0,"ibr", accountType);
+//        repositoryUnderTest.save(currentAccount);
 
         //when
         Optional<BankAccount> bankAccount = repositoryUnderTest.findById(1L);
@@ -49,7 +49,7 @@ class BankAccountRepositoryTest {
         assertAll(
                 ()->assertEquals(0,bankAccount2.getBalance()),
                 ()->assertEquals("ibr",bankAccount2.getBankUsername()),
-                ()->assertEquals(accountType,bankAccount2.getType()),
+               // ()->assertEquals(accountType,bankAccount2.getType()),
                 ()->assertEquals(1L,bankAccount2.getId())
         );
     }

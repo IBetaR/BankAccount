@@ -9,5 +9,4 @@ class CapsulachallengeApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

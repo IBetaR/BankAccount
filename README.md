@@ -8,13 +8,23 @@ Para correr las funcionalidades requeridas, la app cuenta con tres end points.
 Usando el número de cuenta como atributo de búsqueda, es posible:
 Ver saldo disponible, acreditar y debitar un monto determinado. 
 
-Usando base de datos relacionales MySQL, la aplicación esta configurada para iniciar con una cuenta usando el CommandLineRunner
+Usando base de datos relacionales h2/MySQL, la aplicación esta configurada para iniciar con una cuenta usando el CommandLineRunner
 creando una cuenta con los siguientes atributos:
 
 * [Bank Username]() : ibr
 * [Number account]() : C1
 * [Balance]() : $ 0.00 (por defecto)
 * [Type]() : Cuenta corriente
+
+La raíz del proyecto cuenta con archivo JSON de colección de postman con los end points
+básicos para las pruebas fundamentales de:
+
+1. Checkeo de balance
+2. Acreditar una cantidad al balance
+3. Debitar una cantidad del balance
+
+Adicionalmente, está disponible el link de acceso para probar la
+aplicación mediante el Swagger/UI
 
 ** * 
 ## Chequeo de saldo en cuenta
@@ -32,7 +42,7 @@ http://localhost:8080/api/v1/accounts/account/balance/C1
 ** * 
 ### Acretitar un monto
 
-La app esta configurada para aceptar cualquier valor mayor positivo mayor que cero
+La app esta configurada para aceptar cualquier valor numérico mayor que cero.
 
 ```
 http://localhost:8080/api/v1/accounts/account/balance/credit/C1/1000
@@ -40,7 +50,7 @@ http://localhost:8080/api/v1/accounts/account/balance/credit/C1/1000
 ** * 
 ### Debitar un monto
 
-La app esta configurada para aceptar cualquier valor mayor positivo mayor que cero.
+Acepta cualquier valor numérico mayor que cero.
 Si la cantidad es mayor al saldo disponible, arroja una exception de "Saldo insuficiente"
 
 ```
@@ -59,7 +69,16 @@ http://localhost:8080/api/v1/accounts/account/balance/debit/C1/500
 ## Pruebas
 La App cuenta con pruebas unitarias y de integración. 
 
-En la raiz del proyecto se encuentra a archivo con colección de postman
+Opciones de prueba mediante la SwaggerIU:
+
+```
+http://localhost:8080/swagger-ui.html#/
+```
+
+En la raiz del proyecto se encuentra un archivo con colección de postman
+```
+BankAccount - Cápsula Challenge Entregable.postman_collection.json
+```
 ** *
 
 ## Documentación

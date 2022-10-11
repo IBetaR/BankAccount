@@ -20,6 +20,7 @@ public class CapsulachallengeApplication {
 	CommandLineRunner runner(BankAccountRepository bankAccountRepository){
 		return args -> {
 			BankAccount bankAccount =new BankAccount();
+			bankAccount.setId(1L);
 			bankAccount.setBankUsername("ibr");
 			bankAccount.setNumberAccount("C1");
 			bankAccount.setType(AccountType.CURRENT_ACCOUNT);

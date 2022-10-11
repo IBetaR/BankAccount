@@ -88,7 +88,7 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
     public ResponseEntity<Response> creditBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount,
                                                                  @PathVariable Double amountTransaction) throws IOException {
         BankAccount account = service.creditBalanceByNumberAccount(numberAccount,amountTransaction);
-        if ((account.getNumberAccount().equals(numberAccount)&&!amountTransaction.isNaN())&&(amountTransaction>0)) {
+        if ((account.getNumberAccount().equals(numberAccount) && !amountTransaction.isNaN()) && (amountTransaction > 0)) {
             return ResponseEntity.ok(
                     Response.builder()
                             .timeStamp(now())
@@ -104,7 +104,7 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
                         .message("Invalid transaction," +
-                                " you cannot credit or withdraw invalid amounts. check your balance if is lower than your available balance -> : "
+                                " you cannot credit or withdraw invalid/negative amounts. check your balance if is lower than your available balance -> : "
                                 + account.getBalance() + " . Or check your transactions requests")
                         .developerMessage("Error from Client side. Bad request")
                         .httpStatus(BAD_REQUEST)
@@ -119,7 +119,7 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
     public ResponseEntity<Response> debitBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount,
                                                                  @PathVariable Double amountTransaction) throws IOException {
            BankAccount account = service.getBalanceByNumberAccount(numberAccount);
-           if((account.getNumberAccount().equals(numberAccount)&&!amountTransaction.isNaN())
+           if((account.getNumberAccount().equals(numberAccount) && (!amountTransaction.isNaN()))
                    &&(amountTransaction>0&&(account.getBalance() >= amountTransaction))){
                 service.debitBalanceByNumberAccount(numberAccount,amountTransaction);
                return ResponseEntity.ok(
@@ -136,7 +136,7 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
                 Response.builder()
                 .timeStamp(LocalDateTime.now())
                 .message("Fonds are insufficient," +
-                        " you cannot debit zero or withdraw an amount greater than your balance. Your available balance -> : "+ account.getBalance())
+                        " you cannot debit zero/negative or withdraw an amount greater than your balance. Your available balance -> : "+ account.getBalance())
                 .developerMessage("Error from client side. Bad request")
                 .httpStatus(HttpStatus.CONFLICT)
                 .statusCode(HttpStatus.CONFLICT.value())

@@ -24,15 +24,26 @@ public abstract class BaseControllerImpl <E extends Base,
     @ApiOperation(value = "Retrieve all accounts listed", notes = "This Operation returns all stored accounts.")
     @GetMapping("")
     public ResponseEntity<?> getAll() {
-        return ResponseEntity.ok(
-                Response.builder()
-                        .timeStamp(LocalDateTime.now())
-                        .data(Map.of("bankAccounts",service.list(20)))
-                        .message("Bank Accounts fetched")
-                        .httpStatus(HttpStatus.OK)
-                        .statusCode(HttpStatus.OK.value())
-                        .build()
-        );
+        try {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .data(Map.of("bankAccounts",service.list(20)))
+                            .message("Bank Accounts fetched")
+                            .httpStatus(HttpStatus.OK)
+                            .statusCode(HttpStatus.OK.value())
+                            .build()
+            );
+        } catch (Exception e) {
+            return ResponseEntity.ok(
+                    Response.builder()
+                            .timeStamp(LocalDateTime.now())
+                            .message("Resources or data are not in Database.  Please try later or contact System admin")
+                            .developerMessage("Error from BaseControllerImpl. Resource not found")
+                            .httpStatus(HttpStatus.NOT_FOUND)
+                            .statusCode(HttpStatus.NOT_FOUND.value()).build());
+        }
+
     }
 
     @ApiOperation(value = "Retrieve one account by its ID", notes = "This Operation returns an account by ID")

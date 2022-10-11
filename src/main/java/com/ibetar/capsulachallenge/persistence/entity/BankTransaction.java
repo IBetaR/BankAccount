@@ -12,22 +12,22 @@ public class BankTransaction {
     public final double amountTransaction;
 
     public BankTransaction(double finalBalance, double amountTransaction) {
-        this.finalBalance = DoubleRounder.round(finalBalance,3);
-        this.amountTransaction = DoubleRounder.round(amountTransaction,3);
+        this.finalBalance = DoubleRounder.round(finalBalance,4);
+        this.amountTransaction = DoubleRounder.round(amountTransaction,4);
     }
 
     public static double checkBalance(double actualBalance){
-        return DoubleRounder.round(actualBalance,3);
+        return DoubleRounder.round(actualBalance,4);
     }
 
     public static double creditAmount(double... finalBalance){
         return DoubleRounder.round(DoubleStream.of(finalBalance)
-                .reduce(0, (actualBalance,amountTransaction) -> actualBalance + amountTransaction),3);
+                .reduce(0, Double::sum),3);
     }
 
     public static double debitAmount(double... finalBalance){
         return DoubleRounder.round((DoubleStream.of(finalBalance)
-                .reduce(0, (actualBalance,amountTransaction) -> (actualBalance - amountTransaction)*-1)*-1),3);
+                .reduce(0, (actualBalance,amountTransaction) -> (actualBalance - amountTransaction)*-1)*-1),4);
     }
 
 //    public static double debitAmount(double... finalBalance){

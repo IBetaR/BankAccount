@@ -14,7 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BankAccount extends Base{
+public final class BankAccount extends Base{
 
     @Column(unique = true)
     @NotBlank
@@ -32,7 +32,7 @@ public class BankAccount extends Base{
     public BankAccount(String numberAccount, double balance, String bankUsername, AccountType type) {
 
         this.numberAccount = numberAccount;
-        this.balance = DoubleRounder.round(balance,3);
+        this.balance = DoubleRounder.round(balance,4);
         this.bankUsername = bankUsername;
         this.type = type;
     }
