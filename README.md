@@ -4,9 +4,9 @@ Proyecto - desafío para gestionar una cuenta bancaria. Chequeo de saldo, acredi
 ** * 
 ## Getting Started
 
-Para correr las funcionalidades requeridas, la app cuenta con tres end points.
-Usando el número de cuenta como atributo de búsqueda, es posible:
-Ver saldo disponible, acreditar y debitar un monto determinado. 
+Para correr las funcionalidades requeridas, la app cuenta con tres (3) end points.
+Usando el número de cuenta como atributo de búsqueda, es posible ver saldo disponible, acreditar y debitar un monto determinado. 
+
 
 Usando base de datos relacionales h2/MySQL, la aplicación esta configurada para iniciar con una cuenta usando el CommandLineRunner
 creando una cuenta con los siguientes atributos:
@@ -25,6 +25,29 @@ básicos para las pruebas fundamentales de:
 
 Adicionalmente, está disponible el link de acceso para probar la
 aplicación mediante el Swagger/UI
+** * 
+## Preconditions
+
+La App esta construida usando el framework Spring Boot y el manejo de dependencias con Maven.
+
+Para correr la aplicación se debe verificar y comprobar que están instalados: 
+
+* [Versión Java SE - JDK](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/module-summary.html) - The Java Platform, Standard Edition (Java SE) / The Java Development Kit (JDK) APIs
+```
+java --version
+```
+* [Versión Maven](https://maven.apache.org/) - Dependency Management
+```
+mvn -version
+```
+** * 
+## Ejecutando aplicación
+
+Ubicando el ejecutable .JAR correr por consola el comando:
+
+```
+java -jar .\capsulachallenge-1.0.jar
+```
 
 ** * 
 ## Chequeo de saldo en cuenta
@@ -67,7 +90,7 @@ http://localhost:8080/api/v1/accounts/account/balance/debit/C1/500
 * **Ilich Betancourt Rangel** - *Developer Jr.* - [Ibetar](https://github.com/IBetaR)
 
 ## Pruebas
-La App cuenta con pruebas unitarias y de integración. 
+La App cuenta con pruebas unitarias y de integración utilizando Junit5. 
 
 Opciones de prueba mediante la SwaggerIU:
 

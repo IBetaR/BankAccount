@@ -29,7 +29,7 @@ public class SwaggerConfig {
         return new ApiInfo(
                 "Bank Account manage - Cápsula Challenge",
                 "API REST para crear cuenta, chequear, acreditar y debitar saldos",
-                "v1",
+                "v1.0",
                 "Terms of service",
                 new Contact("ibetar", "www.example.com", "ilich@gmail.com"),
                 "License of API", "API license URL", Collections.emptyList());
