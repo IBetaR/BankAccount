@@ -91,12 +91,11 @@ public class HttpRequestTest {
         assertThat(this.testRestTemplate.getForEntity(urlGetDebitBalance,
                 BankAccountDTO.class)).hasNoNullFieldsOrProperties();
 
-
     }
 
     @Test
     @DisplayName("Testing errors messages are thrown for end points requests methods")
-    public void ShouldReturnFailErrorIfRequestAreBadRequest() throws Exception{
+    public void ShouldReturnFailErrorMessagesIfRequestAreBadRequest() throws Exception{
 
         String urlNewAccount = "http://localhost:" + port + "/api/accounts/new";
         String urlGetAccounts = "http://localhost:" + port + "/api/accounts";

@@ -62,7 +62,7 @@ class BankAccountServiceImplTest {
     void getBalanceByNumberAccount() throws Exception {
         BankAccount bankAccount = BankAccountDataTestUtils.getMockBankAccount2(1L);
         Mockito.when(bankAccountService.getBalanceByNumberAccount(anyString()))
-                .thenCallRealMethod();
+                .thenThrow();
 
 
         BankAccountNotFoundException notFoundException = Assertions.assertThrows(BankAccountNotFoundException.class,

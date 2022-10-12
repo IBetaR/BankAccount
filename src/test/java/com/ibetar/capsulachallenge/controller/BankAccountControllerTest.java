@@ -1,12 +1,17 @@
 package com.ibetar.capsulachallenge.controller;
 
+import com.ibetar.capsulachallenge.exception.BankAccountInsufficientFondsException;
+import com.ibetar.capsulachallenge.exception.BankAccountNotFoundException;
 import com.ibetar.capsulachallenge.persistence.entity.AccountType;
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.BankTransaction;
 
+import com.ibetar.capsulachallenge.persistence.entity.Response;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,5 +54,25 @@ class BankAccountControllerTest {
         assertAll(
                 ()->assertEquals(1000,BankTransaction.creditAmount(1000))
         );
+    }
+
+    //Negative Testing
+
+    @Test
+    @Disabled
+    void getBalanceByUnExistingNumberAccount() {
+
+    }
+
+    @Test
+    @Disabled
+    void creditAInvalidAmountToBalance() {
+
+    }
+
+    @Test
+    @Disabled
+    void debitAInvalidAmountToBalance() {
+
     }
 }

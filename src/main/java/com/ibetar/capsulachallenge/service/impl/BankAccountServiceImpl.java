@@ -1,5 +1,6 @@
 package com.ibetar.capsulachallenge.service.impl;
 
+import com.ibetar.capsulachallenge.exception.BankAccountBadRequestAccountsException;
 import com.ibetar.capsulachallenge.exception.BankAccountInsufficientFondsException;
 import com.ibetar.capsulachallenge.exception.BankAccountNotFoundException;
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
@@ -43,8 +44,14 @@ public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> i
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
     public BankAccount createNewBankAccount(BankAccountDTO bankAccountDTO) {
+        log.info("Creating a new bank account... ->");
         BankAccount bankAccount = mapper.map(bankAccountDTO);
-        return this.bankAccountRepository.save(bankAccount);
+        Optional<BankAccount> newBankAccount = Optional.of(bankAccountRepository.save(bankAccount));
+        log.info("Account created: {} ", newBankAccount);
+        return newBankAccount.orElseThrow(
+                ()-> new BankAccountBadRequestAccountsException("An error has occurred while " +
+                        "creating this new account. Please check your request and try again")
+        );
     }
 
     @Override
@@ -57,10 +64,11 @@ public class BankAccountServiceImpl extends BaseServiceImpl<BankAccount, Long> i
     @Override
     public BankAccount getBalanceByNumberAccount(String numberAccount) throws IOException {
         log.info("Fetching account number: {}", numberAccount);
-        Optional<BankAccount> bankAccount =Optional.ofNullable(bankAccountRepository.findByNumberAccount(numberAccount));
+        Optional<BankAccount> bankAccount = Optional.ofNullable(bankAccountRepository.findByNumberAccount(numberAccount));
         log.info("Account number: {} ", numberAccount);
         return bankAccount.orElseThrow(
-                ()->new BankAccountNotFoundException("Bank Account does not exist in Database. Please check your request"));
+                ()->new BankAccountNotFoundException("Bank Account does not exist in Database. " +
+                        "Please check your request"));
     }
 
     @Override

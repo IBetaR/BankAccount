@@ -1,5 +1,6 @@
 package com.ibetar.capsulachallenge.handler;
 
+import com.ibetar.capsulachallenge.exception.BankAccountBadRequestAccountsException;
 import com.ibetar.capsulachallenge.exception.BankAccountInsufficientFondsException;
 import com.ibetar.capsulachallenge.exception.BankAccountNotFoundException;
 import com.ibetar.capsulachallenge.exception.BankAccountServiceExceptionResponse;
@@ -31,6 +32,12 @@ public class BankAccountServiceExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(BankAccountInsufficientFondsException.class)
     public ResponseEntity<Object> handleInsufficientFondsRequest(BankAccountInsufficientFondsException exception, WebRequest request) {
+        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @ExceptionHandler(BankAccountBadRequestAccountsException.class)
+    public ResponseEntity<Object> handleBadRequests(BankAccountBadRequestAccountsException exception, WebRequest request) {
         BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST, LocalDateTime.now());
         return new ResponseEntity<>(response, response.getStatus());
     }

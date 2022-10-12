@@ -62,20 +62,24 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
     public ResponseEntity<Response> getBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount) throws IOException {
         try {
             BankAccount account = service.getBalanceByNumberAccount(numberAccount);
+            log.info("Getting balance...");
             return ResponseEntity.ok(
                     Response.builder()
                             .timeStamp(now())
                             .data(Map.of("balance",account.getBalance()))
-                            .message(Objects.equals(account.getNumberAccount(), numberAccount) ? "Account balance found successfully" : "Account Not found")
+                            .message(Objects.equals(account.getNumberAccount(), numberAccount) ? "Account" +
+                                    " balance found successfully" : "Account Not found")
                             .httpStatus(OK)
                             .statusCode(OK.value())
                             .build()
             );
         } catch (IOException e) {
+            log.error("Resources or data are not in Database.  Please try later or contact System admin");
             return ResponseEntity.ok(
                     Response.builder()
                             .timeStamp(LocalDateTime.now())
-                            .message("Resources or data are not in Database.  Please try later or contact System admin -> " + e)
+                            .message("Resources or data are not in Database.  Please try later or contact" +
+                                    " System admin -> " + e)
                             .developerMessage("Error from BankAccount Controller. Resource not found")
                             .httpStatus(HttpStatus.NOT_FOUND)
                             .statusCode(HttpStatus.NOT_FOUND.value()).build());
@@ -87,24 +91,29 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
     @PatchMapping("/account/balance/credit/{numberAccount}/{amountTransaction}")
     public ResponseEntity<Response> creditBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount,
                                                                  @PathVariable Double amountTransaction) throws IOException {
+        log.info("Getting account data...");
         BankAccount account = service.creditBalanceByNumberAccount(numberAccount,amountTransaction);
-        if ((account.getNumberAccount().equals(numberAccount) && !amountTransaction.isNaN()) && (amountTransaction > 0)) {
+        if ((account.getNumberAccount().equals(numberAccount)) && (!amountTransaction.isNaN()) && (amountTransaction > 0)) {
+            log.info("Accrediting to account..." + amountTransaction);
             return ResponseEntity.ok(
                     Response.builder()
                             .timeStamp(now())
                             .data(Map.of("balance",account.getBalance()))
                             .message(Objects.equals(account.getNumberAccount(),
-                                    numberAccount) ? "Amount was accredited to the Account successfully" : "Account Not found")
+                                    numberAccount) ? "Amount was accredited to the Account successfully"
+                                    : "Account Not found")
                             .httpStatus(OK)
                             .statusCode(OK.value())
                             .build()
             );
         }
+        log.error("Invalid transaction. you cannot credit or withdraw invalid/negative amounts");
         return ResponseEntity.badRequest().body(
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
                         .message("Invalid transaction," +
-                                " you cannot credit or withdraw invalid/negative amounts. check your balance if is lower than your available balance -> : "
+                                " you cannot credit or withdraw invalid/negative amounts. check your balance" +
+                                " if is lower than your available balance -> : "
                                 + account.getBalance() + " . Or check your transactions requests")
                         .developerMessage("Error from Client side. Bad request")
                         .httpStatus(BAD_REQUEST)
@@ -118,25 +127,30 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
     @PatchMapping("/account/balance/debit/{numberAccount}/{amountTransaction}")
     public ResponseEntity<Response> debitBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount,
                                                                  @PathVariable Double amountTransaction) throws IOException {
+           log.info("Getting account data...");
            BankAccount account = service.getBalanceByNumberAccount(numberAccount);
            if((account.getNumberAccount().equals(numberAccount) && (!amountTransaction.isNaN()))
                    &&(amountTransaction>0&&(account.getBalance() >= amountTransaction))){
                 service.debitBalanceByNumberAccount(numberAccount,amountTransaction);
+               log.info("Debiting from account $ {}...", amountTransaction);
                return ResponseEntity.ok(
                        Response.builder()
                                .timeStamp(now())
                                .data(Map.of("balance",account.getBalance()))
-                               .message(Objects.equals(account.getNumberAccount(), numberAccount) ? "Account balance found successfully" : "Account Not found")
+                               .message(Objects.equals(account.getNumberAccount(), numberAccount) ?
+                                       "Account balance found successfully" : "Account Not found")
                                .httpStatus(OK)
                                .statusCode(OK.value())
                                .build()
                );
            }
+        log.error("Invalid transaction. you cannot credit or withdraw invalid/negative amounts");
         return ResponseEntity.status(CONFLICT).body(
                 Response.builder()
                 .timeStamp(LocalDateTime.now())
                 .message("Fonds are insufficient," +
-                        " you cannot debit zero/negative or withdraw an amount greater than your balance. Your available balance -> : "+ account.getBalance())
+                        " you cannot debit zero/negative or withdraw an amount greater than your balance." +
+                        " Your available balance -> : "+ account.getBalance())
                 .developerMessage("Error from client side. Bad request")
                 .httpStatus(HttpStatus.CONFLICT)
                 .statusCode(HttpStatus.CONFLICT.value())
