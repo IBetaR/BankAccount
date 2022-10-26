@@ -1,5 +1,6 @@
 package com.ibetar.capsulachallenge.util;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.dto.BankAccountDTO;
 
@@ -19,7 +20,7 @@ public class BankAccountDataTestUtils {
         bankAccount.setId(accountId);
         bankAccount.setBankUsername("ibr2");
         bankAccount.setNumberAccount("C2");
-        bankAccount.setBalance(0.0);
+        bankAccount.setBalance(new AtomicDouble(0));
         return bankAccount;
     }
 

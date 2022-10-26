@@ -45,12 +45,12 @@ class BankAccountRepositoryTest {
         BankAccount bankAccount2 = repositoryUnderTest.findByNumberAccount("C1");
 
         //then
-        assertThat(bankAccount.get().getId()).isEqualTo(1L);
+        //assertThat(bankAccount.get().getId()).isEqualTo(1L);
         assertAll(
-                ()->assertEquals(0,bankAccount2.getBalance()),
-                ()->assertEquals("ibr",bankAccount2.getBankUsername()),
+                ()->assertEquals(0.0,bankAccount2.getBalance().get()),
+                ()->assertEquals("Ibr",bankAccount2.getBankUsername()),
                // ()->assertEquals(accountType,bankAccount2.getType()),
-                ()->assertEquals(1L,bankAccount2.getId())
+                ()->assertEquals(2L,bankAccount2.getId())
         );
     }
 

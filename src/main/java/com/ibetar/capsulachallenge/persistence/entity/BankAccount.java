@@ -1,9 +1,9 @@
 package com.ibetar.capsulachallenge.persistence.entity;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.decimal4j.util.DoubleRounder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,14 +14,14 @@ import java.util.Objects;
 @NoArgsConstructor
 @Getter
 @Setter
-public final class BankAccount extends Base{
+public class BankAccount extends Base{
 
     @Column(unique = true)
     @NotBlank
     private String numberAccount;
 
     @PositiveOrZero
-    private double balance = 0;
+    private AtomicDouble balance = new AtomicDouble(0);
 
     @Column(unique = true)
     @NotBlank
@@ -29,10 +29,18 @@ public final class BankAccount extends Base{
 
     private AccountType type;
 
-    public BankAccount(String numberAccount, double balance, String bankUsername, AccountType type) {
+    //@Transient
+    @OneToOne(optional = true)
+    @JoinColumn(name = "fk_bankUser")
+    private BankUser bankUser;
+
+    public BankAccount(String numberAccount,
+                       AtomicDouble balance,
+                       String bankUsername,
+                       AccountType type) {
 
         this.numberAccount = numberAccount;
-        this.balance = DoubleRounder.round(balance,4);
+        this.balance = balance;
         this.bankUsername = bankUsername;
         this.type = type;
     }
@@ -41,7 +49,7 @@ public final class BankAccount extends Base{
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BankAccount that)) return false;
-        return Double.compare(that.getBalance(), getBalance()) == 0 && getNumberAccount().equals(that.getNumberAccount()) && getBankUsername().equals(that.getBankUsername()) && getType() == that.getType();
+        return getNumberAccount().equals(that.getNumberAccount()) && getBalance().equals(that.getBalance()) && getBankUsername().equals(that.getBankUsername()) && getType() == that.getType();
     }
 
     @Override

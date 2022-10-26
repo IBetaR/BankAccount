@@ -27,7 +27,8 @@ class BankAccountServiceImplTest {
     @Mock
     private BankAccountRepository bankAccountRepository;
     @InjectMocks
-    private BankAccountServiceImpl bankAccountService;
+    private BankTransactionServiceImpl bankTransactionService;
+    //private BankAccountServiceImpl bankAccountService;
 
     @BeforeEach
     public void init() {
@@ -43,7 +44,7 @@ class BankAccountServiceImplTest {
         bankAccount.setId(1L);
 
         BankAccountNotFoundException notFoundException = Assertions.assertThrows(BankAccountNotFoundException.class,
-                ()-> bankAccountService.findById(1L));
+                ()-> bankTransactionService.findById(1L));
 
         Assertions.assertEquals(ExceptionMessagesEnum.ACCOUNT_NOT_FOUND.getValue(),notFoundException.getMessage());
         Assertions.assertEquals("ibr",bankAccount.getBankUsername());
@@ -61,12 +62,12 @@ class BankAccountServiceImplTest {
     @Disabled
     void getBalanceByNumberAccount() throws Exception {
         BankAccount bankAccount = BankAccountDataTestUtils.getMockBankAccount2(1L);
-        Mockito.when(bankAccountService.getBalanceByNumberAccount(anyString()))
+        Mockito.when(bankTransactionService.getBalanceByNumberAccount(anyString()))
                 .thenThrow();
 
 
         BankAccountNotFoundException notFoundException = Assertions.assertThrows(BankAccountNotFoundException.class,
-                ()-> bankAccountService.findById(1L));
+                ()-> bankTransactionService.findById(1L));
 
         Assertions.assertEquals(BankAccountNotFoundException.class,notFoundException.getMessage());
         //Assertions.assertEquals(0,bankAccount.getBalance());

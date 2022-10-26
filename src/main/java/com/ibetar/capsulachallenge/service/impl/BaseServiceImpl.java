@@ -1,15 +1,18 @@
 package com.ibetar.capsulachallenge.service.impl;
 
+import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.Base;
 import com.ibetar.capsulachallenge.persistence.repository.BaseRepository;
 import com.ibetar.capsulachallenge.service.BaseService;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> implements BaseService<E, ID> {
+public  class BaseServiceImpl <E extends Base, ID extends Serializable> implements BaseService<E, ID> {
 
     protected BaseRepository<E, ID> baseRepository;
 
@@ -18,7 +21,7 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<E> findAll() throws Exception {
         try {
             List<E> entities = baseRepository.findAll();
@@ -77,5 +80,10 @@ public abstract class BaseServiceImpl <E extends Base, ID extends Serializable> 
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @Override
+    public Collection<BankAccount> list(int limit) {
+        return null;
     }
 }

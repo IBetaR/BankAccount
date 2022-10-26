@@ -19,7 +19,7 @@ creando una cuenta con los siguientes atributos:
 La raíz del proyecto cuenta con archivo JSON de colección de postman con los end points
 básicos para las pruebas fundamentales de:
 
-1. Checkeo de balance
+1. Chequeo de balance
 2. Acreditar una cantidad al balance
 3. Debitar una cantidad del balance
 

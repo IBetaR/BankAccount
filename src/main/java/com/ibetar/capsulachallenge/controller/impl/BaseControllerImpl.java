@@ -5,6 +5,7 @@ import com.ibetar.capsulachallenge.persistence.entity.Response;
 import com.ibetar.capsulachallenge.service.impl.BaseServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Api
+@Slf4j
 public abstract class BaseControllerImpl <E extends Base,
         S extends BaseServiceImpl<E, Long>> implements BaseController<E, Long>{
 
@@ -24,6 +26,7 @@ public abstract class BaseControllerImpl <E extends Base,
     @ApiOperation(value = "Retrieve all accounts listed", notes = "This Operation returns all stored accounts.")
     @GetMapping("")
     public ResponseEntity<?> getAll() {
+        log.info("Getting list of accounts");
         try {
             return ResponseEntity.ok(
                     Response.builder()

@@ -1,13 +1,17 @@
 package com.ibetar.capsulachallenge.controller;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.ibetar.capsulachallenge.controller.impl.BaseControllerImpl;
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
+import com.ibetar.capsulachallenge.persistence.entity.BankOperation;
 import com.ibetar.capsulachallenge.persistence.entity.Response;
 import com.ibetar.capsulachallenge.persistence.entity.dto.BankAccountDTO;
-import com.ibetar.capsulachallenge.service.impl.BankAccountServiceImpl;
+//import com.ibetar.capsulachallenge.service.impl.BankAccountServiceImpl;
 
+import com.ibetar.capsulachallenge.service.impl.BankTransactionServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,15 +31,11 @@ import static org.springframework.http.HttpStatus.*;
 @Api
 @CrossOrigin(origins = "*")
 @RequestMapping(path = "api/v1/accounts")
-public class BankAccountController extends BaseControllerImpl <BankAccount, BankAccountServiceImpl> {
+@AllArgsConstructor
+public class BankAccountController extends BaseControllerImpl <BankAccount, BankTransactionServiceImpl> {
 
     @Autowired
-    private final BankAccountServiceImpl bankAccountService;
-
-    @Autowired
-    public BankAccountController(BankAccountServiceImpl bankAccountService) {
-        this.bankAccountService = bankAccountService;
-    }
+    private final BankTransactionServiceImpl bankTransactionService;
 
     @ApiOperation(value = "Create a new Bank Account",
             notes = "This operation returns a new account with 0.00 balance by default")
@@ -63,12 +63,12 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
         try {
             BankAccount account = service.getBalanceByNumberAccount(numberAccount);
             log.info("Getting balance...");
+            log.info("Your balance is: {}",account.getBalance());
             return ResponseEntity.ok(
                     Response.builder()
                             .timeStamp(now())
                             .data(Map.of("balance",account.getBalance()))
-                            .message(Objects.equals(account.getNumberAccount(), numberAccount) ? "Account" +
-                                    " balance found successfully" : "Account Not found")
+                            .message("Account number: " + account.getNumberAccount())
                             .httpStatus(OK)
                             .statusCode(OK.value())
                             .build()
@@ -130,7 +130,7 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
            log.info("Getting account data...");
            BankAccount account = service.getBalanceByNumberAccount(numberAccount);
            if((account.getNumberAccount().equals(numberAccount) && (!amountTransaction.isNaN()))
-                   &&(amountTransaction>0&&(account.getBalance() >= amountTransaction))){
+                   &&(amountTransaction> 0 && (account.getBalance().get() >= amountTransaction))){
                 service.debitBalanceByNumberAccount(numberAccount,amountTransaction);
                log.info("Debiting from account $ {}...", amountTransaction);
                return ResponseEntity.ok(
