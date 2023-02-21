@@ -9,10 +9,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class BankAccountServiceExceptionResponse {
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    private LocalDateTime timestamp;
     private String message;
     private String details;
     private HttpStatus status;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-    private LocalDateTime timestamp;
 }

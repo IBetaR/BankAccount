@@ -6,8 +6,12 @@ import com.ibetar.capsulachallenge.exception.BankAccountInsufficientFondsExcepti
 import com.ibetar.capsulachallenge.exception.BankAccountNotFoundException;
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.BankOperation;
+import com.ibetar.capsulachallenge.persistence.entity.SavingAccount;
 import com.ibetar.capsulachallenge.persistence.entity.dto.BankAccountDTO;
+import com.ibetar.capsulachallenge.persistence.entity.dto.SavingAccountDto;
 import com.ibetar.capsulachallenge.persistence.entity.mapper.BankAccountDtoToBankAccount;
+//import com.ibetar.capsulachallenge.persistence.entity.mapper.CurrentAccountDtoToCurrentAccount;
+//import com.ibetar.capsulachallenge.persistence.entity.mapper.SavingAccountDtoToSavingAccount;
 import com.ibetar.capsulachallenge.persistence.repository.BankAccountRepository;
 import com.ibetar.capsulachallenge.persistence.repository.BaseRepository;
 import com.ibetar.capsulachallenge.service.BankTransactionService;
@@ -35,11 +39,20 @@ public class BankTransactionServiceImpl extends BaseServiceImpl<BankAccount, Lon
     @Autowired
     private final BankAccountRepository bankAccountRepository;
     private final BankAccountDtoToBankAccount mapper;
+//    private final SavingAccountDtoToSavingAccount savingMapper;
+//    private final CurrentAccountDtoToCurrentAccount currentMapper;
 
-    public BankTransactionServiceImpl(BaseRepository<BankAccount, Long> baseRepository, BankAccountRepository bankAccountRepository, BankAccountDtoToBankAccount mapper) {
+    public BankTransactionServiceImpl(BaseRepository<BankAccount, Long> baseRepository,
+                                      BankAccountRepository bankAccountRepository,
+                                      BankAccountDtoToBankAccount mapper
+                                      //SavingAccountDtoToSavingAccount savingMapper,
+                                      //CurrentAccountDtoToCurrentAccount currentMapper
+    ) {
         super(baseRepository);
         this.bankAccountRepository = bankAccountRepository;
         this.mapper = mapper;
+//        this.savingMapper = savingMapper;
+//        this.currentMapper = currentMapper;
     }
 
     @Override
@@ -55,6 +68,18 @@ public class BankTransactionServiceImpl extends BaseServiceImpl<BankAccount, Lon
         );
     }
 
+//    @Override
+//    public BankAccount createNewSavingAccount(SavingAccountDto savingAccountDto) throws IOException {
+//        log.info("Creating a new bank account... ->");
+//        SavingAccount savingAccount = savingMapper.map(savingAccountDto);
+//        Optional<SavingAccount> newBankAccount = Optional.of(bankAccountRepository.save(savingAccount));
+//        log.info("Account created: {} ", newBankAccount);
+//        return newBankAccount.orElseThrow(
+//                ()-> new BankAccountBadRequestAccountsException("An error has occurred while " +
+//                        "creating this new account. Please check your request and try again")
+//        );
+//    }
+
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.NESTED)
     public BankAccount getBalanceByNumberAccount(String numberAccount) throws IOException {
@@ -63,7 +88,7 @@ public class BankTransactionServiceImpl extends BaseServiceImpl<BankAccount, Lon
         Optional<Double> balance = Optional.of(BankOperation.checkBalance(bankAccount.get()));
         log.info("Account number: {} ", numberAccount);
         return bankAccount.orElseThrow(
-                ()->new BankAccountNotFoundException("Bank Account does not exist in Database. " +
+                ()-> new BankAccountNotFoundException("Bank Account does not exist in Database. " +
                         "Please check your request"));
     }
 
@@ -115,38 +140,44 @@ public class BankTransactionServiceImpl extends BaseServiceImpl<BankAccount, Lon
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.NESTED)
     public void transfer(String bankAccountNumberFrom, String bankAccountNumberTo, double amountTransaction) {
-        try {
-            log.info("Consulting data of accounts numbers {} and {}", bankAccountNumberFrom, bankAccountNumberTo);
-            //TODO: Check if accounts exist in DB
-            BankAccount bankAccountFrom = bankAccountRepository.findByNumberAccount(bankAccountNumberFrom);
-            BankAccount bankAccountTo = bankAccountRepository.findByNumberAccount(bankAccountNumberTo);
+        //Check if query's values are valid, not null, not empty, and amount is a valid and positive value
+            try {
+                log.info("Consulting data of accounts numbers {} and {}", bankAccountNumberFrom, bankAccountNumberTo);
 
-            //TODO: Check both accounts balances and validate if transaction can proceed
-            log.info("Checking accounts balances");
-            double actualBalanceFrom = BankOperation.checkBalance(bankAccountFrom);
-            double actualBalanceTo = BankOperation.checkBalance(bankAccountTo);
-            log.info("AccountFrom balance = $ {} : AccountTo balance = $ {}",actualBalanceFrom,actualBalanceTo);
+                //TODO: Check if accounts exist in DB
+                BankAccount bankAccountFrom = bankAccountRepository.findByNumberAccount(bankAccountNumberFrom);
+                BankAccount bankAccountTo = bankAccountRepository.findByNumberAccount(bankAccountNumberTo);
 
-            //Proceed with bank operations
-            log.info("Debiting amount = $ {} from account {}", amountTransaction, bankAccountFrom);
-            AtomicDouble newBalanceFrom = new AtomicDouble(BankOperation.debitAmount(bankAccountFrom,amountTransaction));
+                //TODO: Check both accounts balances and validate if transaction can proceed
+                log.info("Checking accounts balances");
+                double actualBalanceFrom = BankOperation.checkBalance(bankAccountFrom);
+                double actualBalanceTo = BankOperation.checkBalance(bankAccountTo);
+                log.info("AccountFrom balance = $ {} : AccountTo balance = $ {}",actualBalanceFrom,actualBalanceTo);
 
-            log.info("Accrediting amount = $ {} To account {}", amountTransaction, bankAccountTo);
-            AtomicDouble newBalanceTo = new AtomicDouble(BankOperation.creditAmount(bankAccountTo,amountTransaction));
+                //Proceed with bank operations
+                log.info("Debiting amount = $ {} from account {}", amountTransaction, bankAccountFrom);
+                AtomicDouble newBalanceFrom = new AtomicDouble(BankOperation.debitAmount(bankAccountFrom,amountTransaction));
 
-            //Setting and updating accounts balances
-            log.info("Updating account's balances");
-            bankAccountFrom.setBalance(newBalanceFrom);
-            bankAccountTo.setBalance(newBalanceTo);
-            log.info("AccountFrom updated balance = $ {} : AccountTo updated balance = $ {}",newBalanceFrom,newBalanceTo);
+                log.info("Accrediting amount = $ {} To account {}", amountTransaction, bankAccountTo);
+                AtomicDouble newBalanceTo = new AtomicDouble(BankOperation.creditAmount(bankAccountTo,amountTransaction));
 
-            //Updating DB
-            log.info("Updating Database's registry of accounts...");
-            bankAccountRepository.saveAll(List.of(bankAccountFrom,bankAccountTo));
-            log.info("Transfer transaction request successful");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+                //Setting and updating accounts balances
+                log.info("Updating account's balances");
+                bankAccountFrom.setBalance(newBalanceFrom);
+                bankAccountTo.setBalance(newBalanceTo);
+                log.info("AccountFrom updated balance = $ {} : AccountTo updated balance = $ {}",newBalanceFrom,newBalanceTo);
+
+                //Updating DB
+                log.info("Updating Database's registry of accounts...");
+                bankAccountRepository.saveAll(List.of(bankAccountFrom,bankAccountTo));
+                log.info("Transfer transaction request successful");
+            } catch (BankAccountInsufficientFondsException e) {
+                throw  new BankAccountInsufficientFondsException("Insufficient fonds" + e);
+            } catch ( BankAccountBadRequestAccountsException e) {
+                throw new BankAccountBadRequestAccountsException("Bad request" + e);
+            } catch (BankAccountNotFoundException e) {
+                throw new BankAccountNotFoundException("Not found" + e);
+            }
     }
 
     @Override

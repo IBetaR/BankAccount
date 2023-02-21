@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BankAccountBadRequestAccountsException extends RuntimeException {
-
     public BankAccountBadRequestAccountsException(String message){
         super(message);
     }

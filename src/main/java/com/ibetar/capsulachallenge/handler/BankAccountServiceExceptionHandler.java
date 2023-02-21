@@ -20,25 +20,25 @@ public class BankAccountServiceExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(Exception exception, WebRequest request) {
-        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.INTERNAL_SERVER_ERROR, LocalDateTime.now());
+        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(LocalDateTime.now(), exception.getMessage(), request.getDescription(false), HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(response, response.getStatus());
     }
 
     @ExceptionHandler(BankAccountNotFoundException.class)
     public ResponseEntity<Object> handleResourceNotFound(BankAccountNotFoundException exception, WebRequest request) {
-        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.NOT_FOUND, LocalDateTime.now());
+        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(LocalDateTime.now(), exception.getMessage(), request.getDescription(false), HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(response, response.getStatus());
     }
 
     @ExceptionHandler(BankAccountInsufficientFondsException.class)
     public ResponseEntity<Object> handleInsufficientFondsRequest(BankAccountInsufficientFondsException exception, WebRequest request) {
-        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(LocalDateTime.now(), exception.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(response, response.getStatus());
     }
 
     @ExceptionHandler(BankAccountBadRequestAccountsException.class)
     public ResponseEntity<Object> handleBadRequests(BankAccountBadRequestAccountsException exception, WebRequest request) {
-        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(exception.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        BankAccountServiceExceptionResponse response = new BankAccountServiceExceptionResponse(LocalDateTime.now(), exception.getMessage(), request.getDescription(false), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

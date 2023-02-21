@@ -18,6 +18,7 @@ class BankOperationTest {
     void setUp() {
     }
 
+
     @Test
     @DisplayName("When create a new account its balance should be zero")
     void checkBalanceInNewAccountShouldBeZero() {
@@ -28,7 +29,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("ibr");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("c1");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         //then
         assertEquals(0.0, BankOperation.checkBalance(bankAccount));
@@ -39,7 +40,7 @@ class BankOperationTest {
         bankAccount2.setBankUsername("janedoe");
         bankAccount2.setId(123L);
         bankAccount2.setNumberAccount("42");
-        bankAccount2.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount2.setType(AccountType.CURRENT);
 
         assertEquals(10.0d, BankOperation.checkBalance(bankAccount2));
     }
@@ -64,7 +65,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertEquals(10.0d, BankOperation.checkBalance(bankAccount));
     }
 
@@ -88,7 +89,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertEquals(Double.NaN, BankOperation.checkBalance(bankAccount));
     }
 
@@ -121,7 +122,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankOperation.checkBalance(bankAccount);
     }
 
@@ -145,7 +146,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertThrows(RuntimeException.class, () -> BankOperation.checkBalance(bankAccount));
     }
 
@@ -169,7 +170,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertEquals(20.0d, BankOperation.creditAmount(bankAccount, 10.0d));
     }
 
@@ -193,7 +194,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertEquals(Double.NaN, BankOperation.creditAmount(bankAccount, 10.0d));
     }
 
@@ -226,7 +227,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankOperation.creditAmount(bankAccount, 10.0d);
     }
 
@@ -250,7 +251,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertThrows(RuntimeException.class, () -> BankOperation.creditAmount(bankAccount, 0.0d));
     }
 
@@ -274,7 +275,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertEquals(0.0d, BankOperation.debitAmount(bankAccount, 10.0d));
     }
 
@@ -298,7 +299,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertEquals(-10.0d, BankOperation.debitAmount(bankAccount, 10.0d));
     }
 
@@ -322,7 +323,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertEquals(Double.NaN, BankOperation.debitAmount(bankAccount, 10.0d));
     }
 
@@ -355,7 +356,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankOperation.debitAmount(bankAccount, 10.0d);
     }
 
@@ -379,7 +380,7 @@ class BankOperationTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         assertThrows(RuntimeException.class, () -> BankOperation.debitAmount(bankAccount, 0.0d));
     }
 

@@ -13,8 +13,8 @@ public class BankAccountDtoToBankAccount implements IMapper<BankAccountDTO, Bank
         BankAccount bankAccount =new BankAccount();
         bankAccount.setBankUsername(in.getBankUsername());
         bankAccount.setNumberAccount(in.getNumberAccount());
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
-        //bankAccount.setBankUser(new BankUser());
+        bankAccount.setType(AccountType.CURRENT);
+        bankAccount.setBankUser(in.getBankUser());
         return bankAccount;
     }
 }

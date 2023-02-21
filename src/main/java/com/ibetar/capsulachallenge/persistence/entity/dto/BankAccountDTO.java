@@ -1,5 +1,6 @@
 package com.ibetar.capsulachallenge.persistence.entity.dto;
 
+import com.ibetar.capsulachallenge.persistence.entity.AccountType;
 import com.ibetar.capsulachallenge.persistence.entity.BankUser;
 import com.ibetar.capsulachallenge.persistence.entity.Base;
 import io.swagger.annotations.ApiModel;
@@ -16,4 +17,5 @@ public class BankAccountDTO extends Base {
     private double balance;
     private String bankUsername;
     private BankUser bankUser;
+    private AccountType type;
 }

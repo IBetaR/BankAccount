@@ -1,13 +1,11 @@
 package com.ibetar.capsulachallenge.controller;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import com.ibetar.capsulachallenge.controller.impl.BaseControllerImpl;
 import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
-import com.ibetar.capsulachallenge.persistence.entity.BankOperation;
 import com.ibetar.capsulachallenge.persistence.entity.Response;
 import com.ibetar.capsulachallenge.persistence.entity.dto.BankAccountDTO;
-//import com.ibetar.capsulachallenge.service.impl.BankAccountServiceImpl;
 
+import com.ibetar.capsulachallenge.persistence.entity.dto.SavingAccountDto;
 import com.ibetar.capsulachallenge.service.impl.BankTransactionServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,14 +54,36 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
         }
     }
 
+//    @ApiOperation(value = "Create a new Bank Savings account",
+//            notes = "This operation returns a new account with 0.00 balance by default")
+//    @PostMapping("/new/savings")
+//    public ResponseEntity<?> createNewSavingAccount(@RequestBody SavingAccountDto savingAccountDto){
+//        try {
+//            return ResponseEntity.status(CREATED).body(
+//                    Response.builder()
+//                            .timeStamp(now())
+//                            .data(Map.of("accounts",service.createNewSavingAccount(savingAccountDto)))
+//                            .message("Account created successfully")
+//                            .httpStatus(CREATED)
+//                            .statusCode(HttpStatus.CREATED.value())
+//                            .build()
+//            );
+//        } catch (Exception e) {
+//            throw new RuntimeException(e + " Error creating new account");
+//        }
+//    }
+
     @ApiOperation(value = "Get balance from a Bank Account based on its number account",
             notes = "This operation returns a Bank Account based on its number account")
     @GetMapping("/account/balance/{numberAccount}")
     public ResponseEntity<Response> getBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount) throws IOException {
-        try {
-            BankAccount account = service.getBalanceByNumberAccount(numberAccount);
+
+        log.info("Consulting account {} in database" + numberAccount);
+        BankAccount account = service.getBalanceByNumberAccount(numberAccount);
+
+        if (!account.getNumberAccount().isEmpty()) {
             log.info("Getting balance...");
-            log.info("Your balance is: {}",account.getBalance());
+            log.info("Your Balance is : {}", account.getBalance());
             return ResponseEntity.ok(
                     Response.builder()
                             .timeStamp(now())
@@ -73,22 +93,47 @@ public class BankAccountController extends BaseControllerImpl <BankAccount, Bank
                             .statusCode(OK.value())
                             .build()
             );
-        } catch (IOException e) {
-            log.error("Resources or data are not in Database.  Please try later or contact System admin");
-            return ResponseEntity.ok(
-                    Response.builder()
-                            .timeStamp(LocalDateTime.now())
-                            .message("Resources or data are not in Database.  Please try later or contact" +
-                                    " System admin -> " + e)
-                            .developerMessage("Error from BankAccount Controller. Resource not found")
-                            .httpStatus(HttpStatus.NOT_FOUND)
-                            .statusCode(HttpStatus.NOT_FOUND.value()).build());
         }
+        log.error("Resources or data are not in Database. Please check your request, try later or contact System admin");
+        return ResponseEntity.badRequest().body(
+                Response.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .message("Resources or data are not in Database" +
+                                " Please check your request, try later or contact System admin")
+                        .developerMessage("Error from Client side. Bad request")
+                        .httpStatus(BAD_REQUEST)
+                        .statusCode(BAD_REQUEST.value())
+                        .build()
+        );
+//        try {
+//            BankAccount account = service.getBalanceByNumberAccount(numberAccount);
+//            log.info("Getting balance...");
+//            log.info("Your balance is: {}",account.getBalance());
+//            return ResponseEntity.ok(
+//                    Response.builder()
+//                            .timeStamp(now())
+//                            .data(Map.of("balance",account.getBalance()))
+//                            .message("Account number: " + account.getNumberAccount())
+//                            .httpStatus(OK)
+//                            .statusCode(OK.value())
+//                            .build()
+//            );
+//        } catch (IOException e) {
+//            log.error("Resources or data are not in Database.  Please try later or contact System admin");
+//            return ResponseEntity.ok(
+//                    Response.builder()
+//                            .timeStamp(LocalDateTime.now())
+//                            .message("Resources or data are not in Database.  Please try later or contact" +
+//                                    " System admin -> " + e)
+//                            .developerMessage("Error from BankAccount Controller. Resource not found")
+//                            .httpStatus(HttpStatus.NOT_FOUND)
+//                            .statusCode(HttpStatus.NOT_FOUND.value()).build());
+//        }
     }
 
     @ApiOperation(value = "This Bank transaction accredits an amount to one Bank Account based on its number account",
             notes = "This operation adds that amount and returns an updated Bank Account's balance")
-    @PatchMapping("/account/balance/credit/{numberAccount}/{amountTransaction}")
+    @PatchMapping(value = "/account/balance/credit/{numberAccount}/{amountTransaction}")
     public ResponseEntity<Response> creditBalanceByNumberAccount(@PathVariable("numberAccount") String numberAccount,
                                                                  @PathVariable Double amountTransaction) throws IOException {
         log.info("Getting account data...");

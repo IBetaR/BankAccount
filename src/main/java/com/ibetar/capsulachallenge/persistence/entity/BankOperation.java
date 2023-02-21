@@ -1,10 +1,14 @@
 package com.ibetar.capsulachallenge.persistence.entity;
 
 import org.decimal4j.util.DoubleRounder;
+import org.springframework.transaction.event.TransactionalEventListener;
 
+import javax.transaction.Transactional;
 import java.util.stream.DoubleStream;
 
-
+//TODO: Check applicability of transactional annotations in Record Class
+//@Transactional
+//@org.springframework.transaction.annotation.Transactional
 public record BankOperation(double amountTransaction) {
 
     public static double checkBalance(BankAccount account) {
@@ -32,16 +36,4 @@ public record BankOperation(double amountTransaction) {
             throw new RuntimeException("Amount transaction cannot be negative");
         }
     }
-
-//    public static double transfer(BankAccount accountFrom, BankAccount accountTo, double amountTransaction) {
-//        if ( amountTransaction > 0) {
-//
-//            double actualBalanceFrom = BankOperation.checkBalance(accountFrom);
-//            double actualBalanceTo = BankOperation.checkBalance(accountTo);
-//            return DoubleRounder.round(
-//                    ( actualBalanceFrom - amountTransaction), 3);
-//        }else {
-//            throw new RuntimeException("Amount transaction cannot be negative");
-//        }
-//    }
 }

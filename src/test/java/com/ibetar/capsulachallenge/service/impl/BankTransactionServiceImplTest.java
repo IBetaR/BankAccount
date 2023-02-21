@@ -36,7 +36,7 @@ class BankTransactionServiceImplTest {
      * Methods under test:
      *
      * <ul>
-     *   <li>{@link BankTransactionServiceImpl#BankTransactionServiceImpl(BaseRepository, BankAccountRepository, BankAccountDtoToBankAccount)}
+     *   <li>{@link BankTransactionServiceImpl#BankTransactionServiceImpl(BaseRepository, BankAccountRepository, BankAccountDtoToBankAccount, com.ibetar.capsulachallenge.persistence.entity.mapper.SavingAccountDtoToSavingAccount, com.ibetar.capsulachallenge.persistence.entity.mapper.CurrentAccountDtoToCurrentAccount)}
      *   <li>{@link BankTransactionServiceImpl#transfer(String, String, double)}
      * </ul>
      */
@@ -53,7 +53,7 @@ class BankTransactionServiceImplTest {
 
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .transfer("42", "42", 10.0d);
     }
 
@@ -78,12 +78,12 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         BankTransactionServiceImpl bankTransactionServiceImpl = new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount());
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -125,11 +125,11 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount);
         BankTransactionServiceImpl bankTransactionServiceImpl = new BankTransactionServiceImpl(
-                (BaseRepository<BankAccount, Long>) mock(BaseRepository.class), bankAccountRepository, null);
+                (BaseRepository<BankAccount, Long>) mock(BaseRepository.class), bankAccountRepository, null, savingMapper, currentMapper);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -169,7 +169,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount);
 
@@ -188,12 +188,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountDtoToBankAccount bankAccountDtoToBankAccount = mock(BankAccountDtoToBankAccount.class);
         when(bankAccountDtoToBankAccount.map((BankAccountDTO) any())).thenReturn(bankAccount1);
         BankTransactionServiceImpl bankTransactionServiceImpl = new BankTransactionServiceImpl(
                 (BaseRepository<BankAccount, Long>) mock(BaseRepository.class), bankAccountRepository,
-                bankAccountDtoToBankAccount);
+                bankAccountDtoToBankAccount, savingMapper, currentMapper);
 
         BankUser bankUser2 = new BankUser();
         bankUser2.setEmail("jane.doe@example.org");
@@ -236,12 +236,12 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertSame(bankAccount,
-                (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+                (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                         .getBalanceByNumberAccount("42"));
         verify(bankAccountRepository).findByNumberAccount((String) any());
     }
@@ -274,11 +274,11 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .getBalanceByNumberAccount("42");
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
@@ -320,11 +320,11 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .getBalanceByNumberAccount("42");
     }
 
@@ -356,11 +356,11 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .getBalanceByNumberAccount("42");
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
@@ -402,11 +402,11 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .getBalanceByNumberAccount("42");
     }
 
@@ -438,11 +438,11 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .getBalanceByNumberAccount("42");
     }
 
@@ -466,7 +466,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -483,13 +483,13 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         BankAccount actualCreditBalanceByNumberAccountResult = (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).creditBalanceByNumberAccount("42", 10.0d);
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).creditBalanceByNumberAccount("42", 10.0d);
         assertSame(bankAccount, actualCreditBalanceByNumberAccountResult);
         assertEquals(20.0d, actualCreditBalanceByNumberAccountResult.getBalance().get());
         verify(bankAccountRepository).findByNumberAccount((String) any());
@@ -517,14 +517,14 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any()))
                 .thenThrow(new BankAccountNotFoundException("An error occurred"));
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertThrows(BankAccountNotFoundException.class, () -> (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).creditBalanceByNumberAccount("42", 10.0d));
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).creditBalanceByNumberAccount("42", 10.0d));
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccountRepository).save((BankAccount) any());
     }
@@ -557,7 +557,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -574,12 +574,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .creditBalanceByNumberAccount("42", 10.0d);
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccountRepository).save((BankAccount) any());
@@ -622,7 +622,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -639,12 +639,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .creditBalanceByNumberAccount("42", 10.0d);
     }
 
@@ -676,7 +676,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -693,12 +693,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .creditBalanceByNumberAccount("42", 10.0d);
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
@@ -739,7 +739,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -756,12 +756,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .creditBalanceByNumberAccount("42", 10.0d);
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
@@ -803,7 +803,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -820,12 +820,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .creditBalanceByNumberAccount("42", 10.0d);
     }
 
@@ -858,7 +858,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -875,12 +875,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .creditBalanceByNumberAccount("42", 10.0d);
     }
 
@@ -912,7 +912,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -929,12 +929,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .creditBalanceByNumberAccount("42", 0.0d);
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
@@ -967,7 +967,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -984,13 +984,13 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         BankAccount actualDebitBalanceByNumberAccountResult = (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).debitBalanceByNumberAccount("42", 10.0d);
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).debitBalanceByNumberAccount("42", 10.0d);
         assertSame(bankAccount, actualDebitBalanceByNumberAccountResult);
         assertEquals(0.0d, actualDebitBalanceByNumberAccountResult.getBalance().get());
         verify(bankAccountRepository).findByNumberAccount((String) any());
@@ -1018,14 +1018,14 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any()))
                 .thenThrow(new BankAccountNotFoundException("An error occurred"));
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertThrows(BankAccountInsufficientFondsException.class, () -> (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).debitBalanceByNumberAccount("42", 10.0d));
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).debitBalanceByNumberAccount("42", 10.0d));
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccountRepository).save((BankAccount) any());
     }
@@ -1058,7 +1058,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -1075,12 +1075,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .debitBalanceByNumberAccount("42", 10.0d);
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccountRepository).save((BankAccount) any());
@@ -1123,7 +1123,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -1140,12 +1140,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .debitBalanceByNumberAccount("42", 10.0d);
     }
 
@@ -1177,7 +1177,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -1194,13 +1194,13 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertThrows(BankAccountInsufficientFondsException.class, () -> (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).debitBalanceByNumberAccount("42", 10.0d));
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).debitBalanceByNumberAccount("42", 10.0d));
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
         verify(bankAccount).getNumberAccount();
@@ -1240,7 +1240,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -1257,13 +1257,13 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertThrows(BankAccountInsufficientFondsException.class, () -> (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).debitBalanceByNumberAccount("42", 10.0d));
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).debitBalanceByNumberAccount("42", 10.0d));
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
         verify(bankAccount).getNumberAccount();
@@ -1304,7 +1304,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -1321,12 +1321,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .debitBalanceByNumberAccount("42", 10.0d);
     }
 
@@ -1359,7 +1359,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -1376,12 +1376,12 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .debitBalanceByNumberAccount("42", 10.0d);
     }
 
@@ -1413,7 +1413,7 @@ class BankTransactionServiceImplTest {
         bankAccount.setBankUsername("janedoe");
         bankAccount.setId(123L);
         bankAccount.setNumberAccount("42");
-        bankAccount.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount.setType(AccountType.CURRENT);
 
         BankUser bankUser1 = new BankUser();
         bankUser1.setEmail("jane.doe@example.org");
@@ -1430,13 +1430,13 @@ class BankTransactionServiceImplTest {
         bankAccount1.setBankUsername("janedoe");
         bankAccount1.setId(123L);
         bankAccount1.setNumberAccount("42");
-        bankAccount1.setType(AccountType.CURRENT_ACCOUNT);
+        bankAccount1.setType(AccountType.CURRENT);
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.save((BankAccount) any())).thenReturn(bankAccount1);
         when(bankAccountRepository.findByNumberAccount((String) any())).thenReturn(bankAccount);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertThrows(BankAccountInsufficientFondsException.class, () -> (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).debitBalanceByNumberAccount("42", 0.0d));
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).debitBalanceByNumberAccount("42", 0.0d));
         verify(bankAccountRepository).findByNumberAccount((String) any());
         verify(bankAccount).getBalance();
         verify(bankAccount).getNumberAccount();
@@ -1482,7 +1482,7 @@ class BankTransactionServiceImplTest {
         when(bankAccountRepository.findAll((Pageable) any())).thenReturn(new PageImpl<>(new ArrayList<>()));
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertTrue(
-                (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+                (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                         .list(1)
                         .isEmpty());
         verify(bankAccountRepository).findAll((Pageable) any());
@@ -1498,7 +1498,7 @@ class BankTransactionServiceImplTest {
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findAll((Pageable) any())).thenReturn(null);
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .list(1);
     }
 
@@ -1512,7 +1512,7 @@ class BankTransactionServiceImplTest {
         BankAccountRepository bankAccountRepository = mock(BankAccountRepository.class);
         when(bankAccountRepository.findAll((Pageable) any())).thenReturn(new PageImpl<>(new ArrayList<>()));
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
-        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount()))
+        (new BankTransactionServiceImpl(baseRepository, bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper))
                 .list(0);
     }
 
@@ -1526,7 +1526,7 @@ class BankTransactionServiceImplTest {
                 .thenThrow(new BankAccountNotFoundException("An error occurred"));
         BaseRepository<BankAccount, Long> baseRepository = (BaseRepository<BankAccount, Long>) mock(BaseRepository.class);
         assertThrows(BankAccountNotFoundException.class, () -> (new BankTransactionServiceImpl(baseRepository,
-                bankAccountRepository, new BankAccountDtoToBankAccount())).list(1));
+                bankAccountRepository, new BankAccountDtoToBankAccount(), savingMapper, currentMapper)).list(1));
         verify(bankAccountRepository).findAll((Pageable) any());
     }
 }

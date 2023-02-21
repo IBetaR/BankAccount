@@ -4,6 +4,7 @@ import com.ibetar.capsulachallenge.persistence.entity.BankAccount;
 import com.ibetar.capsulachallenge.persistence.entity.Base;
 import com.ibetar.capsulachallenge.persistence.repository.BaseRepository;
 import com.ibetar.capsulachallenge.service.BaseService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,7 +84,7 @@ public  class BaseServiceImpl <E extends Base, ID extends Serializable> implemen
     }
 
     @Override
-    public Collection<BankAccount> list(int limit) {
-        return null;
+    public Collection<E> list(int limit) {
+        return baseRepository.findAll(PageRequest.of(0,limit)).toList();
     }
 }
